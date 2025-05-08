@@ -1,0 +1,8 @@
+Dataset Preview:
+       TV  Radio  Newspaper  Sales
+0  230.1   37.8       69.2   22.1
+1   44.5   39.3       45.1   10.4
+2   17.2   45.9       69.3    9.3
+
+Mean Squared Error: 2.10  
+R-squared Score: 0.89  
