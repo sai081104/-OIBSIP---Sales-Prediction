@@ -1,45 +1,63 @@
-# 📊 Task 5: Sales Prediction - OIBSIP Data Science Internship
+# Sales Prediction using Python - OIBSIP Data Science Task
 
-# This project predicts sales based on advertising spend on TV, Radio, and Newspaper.
-# It's a basic linear regression example using the Advertising dataset.
-
-# ✅ Libraries
+# Import Libraries
 import pandas as pd
-from sklearn.linear_model import LinearRegression
+import matplotlib.pyplot as plt
+import seaborn as sns
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_squared_error
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
 
-# ✅ Step 1: Load the dataset
-# Make sure 'advertising.csv' is in your working directory.
-# The dataset contains columns: TV, Radio, Newspaper, Sales
-df = pd.read_csv("advertising.csv")
+# Load the dataset
+data = pd.read_csv("Advertising.csv")
 
-# ✅ Step 2: Display first few rows
-print("Sample data:")
-print(df.head())
+# Display first 5 rows
+print("Dataset Preview:\n", data.head())
 
-# ✅ Step 3: Define features (X) and target (y)
-X = df[['TV', 'Radio', 'Newspaper']]  # Independent variables
-y = df['Sales']                       # Target variable
+# Check for missing values
+print("\nMissing Values:\n", data.isnull().sum())
 
-# ✅ Step 4: Split the data into training and test sets (80% train, 20% test)
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
+# Descriptive statistics
+print("\nStatistical Summary:\n", data.describe())
 
-# ✅ Step 5: Train the Linear Regression model
+# Data Visualization - Pairplot to understand relationships
+sns.pairplot(data)
+plt.suptitle("Data Distribution", y=1.02)
+plt.show()
+
+# Data Visualization - Correlation Heatmap
+plt.figure(figsize=(8, 6))
+sns.heatmap(data.corr(), annot=True, cmap="coolwarm")
+plt.title("Correlation Heatmap")
+plt.show()
+
+# Feature and target variables
+X = data[["TV", "Radio", "Newspaper"]]
+y = data["Sales"]
+
+# Split the data (80% training, 20% testing)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Model Training - Linear Regression
 model = LinearRegression()
 model.fit(X_train, y_train)
 
-# ✅ Step 6: Make predictions on the test data
-predictions = model.predict(X_test)
+# Predict on test data
+y_pred = model.predict(X_test)
 
-# ✅ Step 7: Evaluate the model using Mean Squared Error (MSE)
-mse = mean_squared_error(y_test, predictions)
-print("\nModel Evaluation:")
-print("Mean Squared Error (MSE):", mse)
+# Model Evaluation
+mse = mean_squared_error(y_test, y_pred)
+r2 = r2_score(y_test, y_pred)
 
-# ✅ Step 8: Display model coefficients
-print("\nModel Coefficients:")
-print(f"Intercept: {model.intercept_}")
-print(f"TV Coefficient: {model.coef_[0]}")
-print(f"Radio Coefficient: {model.coef_[1]}")
-print(f"Newspaper Coefficient: {model.coef_[2]}")
+print(f"Mean Squared Error: {mse:.2f}")
+print(f"R-squared Score: {r2:.2f}")
+
+# Plotting Actual vs Predicted Sales
+plt.figure(figsize=(10, 6))
+plt.scatter(y_test, y_pred, color="blue", alpha=0.7)
+plt.xlabel("Actual Sales")
+plt.ylabel("Predicted Sales")
+plt.title("Actual vs Predicted Sales")
+plt.grid(alpha=0.3)
+plt.tight_layout()
+plt.show()
